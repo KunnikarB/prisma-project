@@ -66,6 +66,24 @@ app.post('/userlanguages', async (req, res) => {
   }
 });
 
+/**
+ * UPDATE user languages by email
+ * PUT /userlanguages/:email
+ */
+app.put('/userlanguages/:email', async (req, res) => {
+  const { email } = req.params;
+  const { languages } = req.body;
+  try {
+    const updatedUser = await prisma.userLanguage.update({
+      where: { email },
+      data: { languages },
+    });
+    res.json(updatedUser);
+  } catch (error) {
+    res.status(400).json({ error: `Failed to update languages for ${email}` });
+  }
+});
+
 app.listen(5500, () => {
   console.log('🚀 Server is running on port 5500');
 });

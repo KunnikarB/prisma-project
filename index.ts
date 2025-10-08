@@ -84,6 +84,28 @@ app.put('/userlanguages/:email', async (req, res) => {
   }
 });
 
+/**
+ * DELETE users under 18
+ * DELETE /userlanguages/under18
+ */
+app.delete('/userlanguages/under18', async (req, res) => {
+  try {
+    const result = await prisma.userLanguage.deleteMany({
+      where: {
+        age: { lt: 18 }, // lt = less than
+      },
+    });
+
+    res.json({
+      message: `🧹 Deleted ${result.count} user(s) under 18 years old.`,
+      deletedCount: result.count,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'An error occurred while deleting users.' });
+  }
+});
+
 app.listen(5500, () => {
   console.log('🚀 Server is running on port 5500');
 });

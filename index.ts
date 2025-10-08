@@ -49,8 +49,23 @@ app.get('/userlanguages/:language', async (req, res) => {
   }
 });
 
-app.listen(5500, () => {
-  console.log("🚀 Server is running on port 5500");
+
+/**
+ * POST new user
+ * POST /userlanguages
+ */
+app.post('/userlanguages', async (req, res) => {
+  const { name, email, languages, age } = req.body;
+  try {
+    const newUser = await prisma.userLanguage.create({
+      data: { name, email, languages, age },
+    });
+    res.status(201).json(newUser);
+  } catch (error) {
+    res.status(400).json({ error: 'Failed to create user' });
+  }
 });
 
-
+app.listen(5500, () => {
+  console.log('🚀 Server is running on port 5500');
+});

@@ -1,6 +1,12 @@
-import { useState } from 'react';
+import { useState, FormEvent } from 'react';
+import { User } from '../App';
 
-export default function UserForm({ addUser, loading }) {
+interface Props {
+  addUser: (data: Omit<User, 'id'>) => void;
+  loading: boolean;
+}
+
+export default function AddUserForm({ addUser, loading }: Props) {
   const [form, setForm] = useState({
     name: '',
     email: '',
@@ -8,7 +14,7 @@ export default function UserForm({ addUser, loading }) {
     age: '',
   });
 
-  const handleSubmit = (e) => {
+  const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
     addUser({
       name: form.name,

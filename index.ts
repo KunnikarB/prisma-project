@@ -1,5 +1,8 @@
 import express from "express";
 import { PrismaClient } from '@prisma/client';
+import { userLanguageSchema, updateLanguagesSchema } 
+from "./valiation.ts";
+import { z } from 'zod';
 
 const prisma = new PrismaClient();
 const app = express();
@@ -53,34 +56,50 @@ app.get('/userlanguages/:language', async (req, res) => {
 /**
  * POST new user
  * POST /userlanguages
+ * ✅ POST new user with validation
  */
 app.post('/userlanguages', async (req, res) => {
-  const { name, email, languages, age } = req.body;
   try {
+    const validatedData = userLanguageSchema.parse(req.body);
     const newUser = await prisma.userLanguage.create({
-      data: { name, email, languages, age },
+      data: validatedData,
     });
     res.status(201).json(newUser);
   } catch (error) {
-    res.status(400).json({ error: 'Failed to create user' });
+    if (error instanceof z.ZodError) {
+      return res
+        .status(400)
+        .json({
+          error: 'Validation failed',
+          details: error.flatten().fieldErrors,
+        });
+    }
+    res.status(500).json({ error: 'Internal server error' });
   }
 });
 
 /**
  * UPDATE user languages by email
  * PUT /userlanguages/:email
+ * ✅ UPDATE user languages by email (with validation)
  */
 app.put('/userlanguages/:email', async (req, res) => {
-  const { email } = req.params;
-  const { languages } = req.body;
   try {
+    const { email } = req.params;
+    const validatedData = updateLanguagesSchema.parse(req.body);
     const updatedUser = await prisma.userLanguage.update({
       where: { email },
-      data: { languages },
+      data: { languages: validatedData.languages },
     });
     res.json(updatedUser);
   } catch (error) {
-    res.status(400).json({ error: `Failed to update languages for ${email}` });
+    if (error instanceof z.ZodError) {
+      return res
+        .status(400)
+        .json({ error: 'Validation failed', details: error.flatten().fieldErrors });
+    }
+    
+    res.status(500).json({ error: 'Error updating user' });
   }
 });
 

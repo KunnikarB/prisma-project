@@ -10,6 +10,7 @@
 ✅ Query users by spoken language (from JSON array)
 ✅ Seed database with mock data
 ✅ Automatically apply Prisma migrations
+✅ Zod validation integrated 
 </pre>
 
 ### 🔥 Tech Stack
@@ -83,4 +84,12 @@ model UserLanguage {
 </pre>
 
 <img width="849" height="623" alt="CreateTable" src="https://github.com/user-attachments/assets/a79a8f12-2892-4478-9dd4-4176faae45fd" />
+
+### 🧿 Zod validation integrated
+- Post new user
+<img width="904" height="379" alt="Zod-update" src="https://github.com/user-attachments/assets/cb9b85b9-5a0a-4f88-ade3-0f88a8265908" />
+
+- UPDATE user languages by email
+<img width="904" height="379" alt="Zod-update" src="https://github.com/user-attachments/assets/9e1426d3-4ba3-48f8-99a2-a129ac728fec" />
+
 

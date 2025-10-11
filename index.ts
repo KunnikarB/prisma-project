@@ -3,10 +3,12 @@ import { PrismaClient } from '@prisma/client';
 import { userLanguageSchema, updateLanguagesSchema } 
 from "./valiation.ts";
 import { z } from 'zod';
+import cors from 'cors';
 
 const prisma = new PrismaClient();
 const app = express();
 
+app.use(cors({ origin: 'http://localhost:5173' }));
 app.use(express.json());
 
 /**
@@ -122,6 +124,17 @@ app.delete('/userlanguages/under18', async (req, res) => {
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: 'An error occurred while deleting users.' });
+  }
+});
+
+// DELETE user by email
+app.delete('/userlanguages/:email', async (req, res) => {
+  const { email } = req.params;
+  try {
+    const deleted = await prisma.userLanguage.delete({ where: { email } });
+    res.json({ message: `Deleted user: ${deleted.name}` });
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to delete user' });
   }
 });
 
